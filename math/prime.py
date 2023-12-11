@@ -19,15 +19,14 @@ def primes(limit):
             n = xx3 - yy
             if x > y and n <= limit and n % 12 == 11:
                 sieve[n] = not sieve[n]
-    for x in range(5,int(math.sqrt(limit))):
+    for x in range(5, int(math.sqrt(limit))):
         if sieve[x]:
-            xx=x*x
-            for y in range(xx,limit+1,xx):
+            xx = x * x
+            for y in range(xx, limit+1, xx):
                 sieve[y] = False
-    for q in range(5,limit):
+    for q in range(5, limit):
         if sieve[q] : p.append(q)
     return p
-
 
 def miller_rabin_base_2(n):
     d, s = n - 1, 0
@@ -76,10 +75,10 @@ def lucas_pp(n, D, P, Q):
         d = d >> 1
         s += 1
     U, V = U_V_subscript(n + 1, n, 1, P, P, Q, D)
-    if (U == 0) or (V == 0):
+    if U == 0 or V == 0:
         return True
     for r in range(s - 1):
-        U, V = (U * V) % n, (pow(V, 2, n) - 2 * pow(Q, d * (2**r), n)) % n
+        U, V = (U * V) % n, (pow(V, 2, n) - 2 * pow(Q, d * (2 ** r), n)) % n
         if V == 0:
             return True
     return False
@@ -98,7 +97,7 @@ def jacobi_symbol(a, n):
         elif n & 7 in [1, 7]:
             return 1
     elif a < 0:
-        return (-1)**((n - 1) // 2) * jacobi_symbol(-1 * a, n)
+        return -1 ** ((n - 1) // 2) * jacobi_symbol(-1 * a, n)
     if not a & 1:
         return jacobi_symbol(2, n) * jacobi_symbol(a // 2, n)
     elif a % n != a:
@@ -119,16 +118,14 @@ def D_chooser(candidate):
 
 
 def baillie_psw(candidate):
-    for known_prime in [
-            2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47
-    ]:
+    for known_prime in [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]:
         if candidate == known_prime:
             return True
         elif candidate % known_prime == 0:
             return False
     if not miller_rabin_base_2(candidate):
         return False
-    if int(candidate**0.5 + 0.5)**2 == candidate:
+    if int(candidate ** 0.5 + 0.5) ** 2 == candidate:
         return False
     D = D_chooser(candidate)
     if not lucas_pp(candidate, D, 1, (1 - D) // 4):
@@ -136,11 +133,16 @@ def baillie_psw(candidate):
     return True
 
 
+def aks(n):
+    if n ^ 1 == n + 1:
+        if n == 2:
+            return True
+        return False
+    for i in range(3, n // 2):
+        if math.comb(n, i) % n != 0:
+            return False
+    return True
+
+
 if __name__ == "__main__":
-    p = primes(int(input(">> ")))
-    print(p)
-    print(len(p))
-    for i in p:
-        if not baillie_psw(i):
-            print(False)
-            break
+    print(baillie_psw(int(input(">> "))))
