@@ -97,7 +97,7 @@ def jacobi_symbol(a, n):
         elif n & 7 in [1, 7]:
             return 1
     elif a < 0:
-        return -1 ** ((n - 1) // 2) * jacobi_symbol(-1 * a, n)
+        return (-1) ** ((n - 1) // 2) * jacobi_symbol(-1 * a, n)
     if not a & 1:
         return jacobi_symbol(2, n) * jacobi_symbol(a // 2, n)
     elif a % n != a:
